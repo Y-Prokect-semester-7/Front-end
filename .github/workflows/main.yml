@@ -1,22 +1,39 @@
+name: CI/CD Pipeline
+
+on:
+  push:
+    branches:
+      - main
+  pull_request:
+    branches:
+      - main
+
 jobs:
   build:
-    runs-on: ubuntu-latest  # or your relevant OS
+    runs-on: ubuntu-latest  # You can replace this with the appropriate runner OS
+
     steps:
-      - name: Checkout repository
+      - name: Checkout code
         uses: actions/checkout@v2
 
       - name: Set up Node.js
         uses: actions/setup-node@v2
         with:
-          node-version: '16'  # Or the version you're using
+          node-version: '16'  # Replace with the version you are using
+
+      - name: Navigate to my-vue-app directory
+        run: cd my-vue-app  # Change the directory to where your Vue app is located
 
       - name: Install dependencies
-        run: npm install
+        run: |
+          cd my-vue-app  # Ensure you're in the correct directory
+          npm install
 
       - name: Build project (with error handling)
         run: |
+          cd my-vue-app  # Ensure you're in the correct directory
           npm run build || echo "Build failed, continuing"
-        continue-on-error: true  # Ensure the workflow does not stop on error
+        continue-on-error: true  # Allow the workflow to continue even if build fails
 
-      - name: Post-build steps (optional)
-        run: echo "Build step completed with potential errors."
+      - name: Optional Post-Build Actions
+        run: echo "Build completed with potential errors."
