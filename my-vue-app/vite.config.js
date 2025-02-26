@@ -1,20 +1,16 @@
 import { defineConfig } from 'vite';
 import vue from '@vitejs/plugin-vue';
+import NodePolyfills from 'vite-plugin-node-polyfills';
 
-// Use dynamic import for NodePolyfills
-let NodePolyfills;
-if (process.env.BUILD_ENV === 'development') {
-  NodePolyfills = import('vite-plugin-node-polyfills');
-}
 
 export default defineConfig({
   plugins: [
     vue(),
-    NodePolyfills ? NodePolyfills() : undefined, // Dynamically use the plugin
+    NodePolyfills(),  // This should now work with the default import
   ],
   resolve: {
     alias: {
-      crypto: 'crypto-browserify',
+      crypto: 'crypto-browserify',  // Polyfill for crypto module if needed
     },
   },
 });
