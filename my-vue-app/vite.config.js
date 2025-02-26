@@ -1,14 +1,17 @@
 import { defineConfig } from 'vite';
 import vue from '@vitejs/plugin-vue';
-import path from 'path';
+import * as NodePolyfills from 'vite-plugin-node-polyfills'; // Correct import for ES module
 
 // https://vite.dev/config/
 export default defineConfig({
-  plugins: [vue()],
+  plugins: [
+    vue(),
+    NodePolyfills(),  // Use the imported NodePolyfills
+  ],
   resolve: {
     alias: {
-      // Correctly resolve the crypto module using 'path' for ESM compatibility
-      crypto: path.resolve(__dirname, 'node_modules/crypto-browserify'),
+      // Alias the crypto module to use the browser-friendly crypto-browserify
+      crypto: 'crypto-browserify',
     },
   },
 });
