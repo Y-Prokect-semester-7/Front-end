@@ -7,7 +7,7 @@ export default defineConfig({
   plugins: [vue()],
   resolve: {
     alias: {
-      // Use crypto-browserify for the crypto module
+      // Correctly resolve the crypto module using 'path' for ESM compatibility
       crypto: path.resolve(__dirname, 'node_modules/crypto-browserify'),
     },
   },
