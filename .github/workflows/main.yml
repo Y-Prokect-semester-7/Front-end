@@ -1,46 +1,30 @@
-name: Vue.js CI/CD Pipeline
+# This workflow will do a clean installation of node dependencies, cache/restore them, build the source code and run tests across different versions of node
+# For more information see: https://docs.github.com/en/actions/automating-builds-and-tests/building-and-testing-nodejs
+name: Node.js CI
 
 on:
-  push:
-    branches:
-      - main  # Trigger workflow on push to main branch
   pull_request:
-    branches:
-      - main  # Trigger workflow on pull request targeting main branch
+    branches: [ "master" ]
 
 jobs:
   build:
-    runs-on: ubuntu-latest  # You can use other runners like macOS or Windows if needed
+
+    runs-on: ubuntu-latest
+
+    strategy:
+      matrix:
+        node-version: [ 18.x ]
+        # See supported Node.js release schedule at https://nodejs.org/en/about/releases/
 
     steps:
-      # Step 1: Checkout the repository
-      - name: Checkout code
-        uses: actions/checkout@v2
-
-      # Step 2: Navigate to the 'my-vue-app' folder
-      - name: Change to my-vue-app directory
-        run: cd my-vue-app
-
-      # Step 3: Set up Node.js
-      - name: Set up Node.js
-        uses: actions/setup-node@v2
+      - uses: actions/checkout@v3
+      - name: Use Node.js ${{ matrix.node-version }}
+        uses: actions/setup-node@v3
         with:
-          node-version: '16'  # Set your Node.js version here
-
-      # Step 4: Install dependencies
-      - name: Install dependencies
-        run: npm install
-        working-directory: ./my-vue-app  # Ensure we run npm in the correct folder
-
-      # Step 5: Build the project
-      - name: Build the project
-        run: npm run build
-        working-directory: ./my-vue-app  # Ensure we run the build in the correct folder
-
-      # Optional: Deploy to GitHub Pages (if you are using GitHub Pages)
-      - name: Deploy to GitHub Pages
-        if: github.ref == 'refs/heads/main'
-        run: |
-          npm install -g gh-pages
-          gh-pages -d dist
+          node-version: ${{ matrix.node-version }}
+          cache: 'npm'
+      - run: npm ci
+      # - run: npm test
+      - run: npm run build --if-present
+      # - run: npm run deploy
         working-directory: ./my-vue-app  # Ensure the deployment is in the correct folder
