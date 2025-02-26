@@ -17,24 +17,30 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v2
 
-      # Step 2: Set up Node.js
+      # Step 2: Navigate to the 'my-vue-app' folder
+      - name: Change to my-vue-app directory
+        run: cd my-vue-app
+
+      # Step 3: Set up Node.js
       - name: Set up Node.js
         uses: actions/setup-node@v2
         with:
-          node-version: '16'  # You can specify the Node version your project uses
+          node-version: '16'  # Set your Node.js version here
 
-      # Step 3: Install dependencies
+      # Step 4: Install dependencies
       - name: Install dependencies
         run: npm install
+        working-directory: ./my-vue-app  # Ensure we run npm in the correct folder
 
-      # Step 4: Run build (this will create the production-ready assets)
+      # Step 5: Build the project
       - name: Build the project
         run: npm run build
+        working-directory: ./my-vue-app  # Ensure we run the build in the correct folder
 
-      # Step 5: Deploy to a hosting platform (optional)
-      # If you are deploying to GitHub Pages
+      # Optional: Deploy to GitHub Pages (if you are using GitHub Pages)
       - name: Deploy to GitHub Pages
-        if: github.ref == 'refs/heads/main'  # Only deploy on push to main branch
+        if: github.ref == 'refs/heads/main'
         run: |
           npm install -g gh-pages
           gh-pages -d dist
+        working-directory: ./my-vue-app  # Ensure the deployment is in the correct folder
