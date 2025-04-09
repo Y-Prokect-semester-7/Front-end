@@ -1,19 +1,20 @@
 <template>
     <div class="tweet">
-      <div class="user-info">
-        <img :src="tweet.userAvatar" alt="User Avatar" class="avatar" />
-        <div class="user-details">
-          <h4>{{ tweet.username }}</h4>
-          <p>@{{ tweet.handle }}</p>
-        </div>
-      </div>
-      <p>{{ tweet.content }}</p>
-      <div class="tweet-actions">
-        <button>Like</button>
-        <button>Retweet</button>
-        <button>Reply</button>
-      </div>
+  <div class="user-info">
+    <img :src="tweet.userAvatar" alt="User Avatar" class="avatar" />
+    <div class="user-details">
+      <h4>{{ tweet.username }}</h4>
+      <p>@{{ tweet.handle }}</p>
+      <p class="timestamp">{{ tweet.timestamp }}</p> <!-- 👈 New -->
     </div>
+  </div>
+  <p>{{ tweet.content }}</p>
+  <div class="tweet-actions">
+    <button>Like</button>
+    <button>Retweet</button>
+    <button>Reply</button>
+  </div>
+</div>
   </template>
   
   <script>
@@ -50,6 +51,12 @@
     cursor: pointer;
     margin-right: 10px;
   }
+  .timestamp {
+  font-size: 0.8em;
+  color: #666;
+}
+
   </style>
 
 
+ 
