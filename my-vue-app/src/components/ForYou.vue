@@ -17,7 +17,7 @@ watchEffect(async () => {
 
   const token = await GetToken(getAccessTokenSilently)
   console.log(token);
-  if (!token) {
+  if (!token) { 
     console.error('Token not available')
     return
   }
