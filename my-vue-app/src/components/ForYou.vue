@@ -1,29 +1,31 @@
 <script setup>
-import { ref, onMounted } from 'vue';
-import TweetPost from './TweetPost.vue';
-import { useAuth0 } from '@auth0/auth0-vue';
-import { GetToken } from '../security/SecurityConfig.js';
+import { ref, onMounted, watchEffect } from 'vue'
+import { useAuth0 } from '@auth0/auth0-vue'
+import { GetToken } from '../security/SecurityConfig.js'
+import TweetPost from './TweetPost.vue'
 
-// Reactive variables
-const tweets = ref([]);
+const tweets = ref([])
+const auth = useAuth0()
+const user = auth.user
+const isAuthenticated = auth.isAuthenticated
+const getAccessTokenSilently = auth.getAccessTokenSilently
 
-const { user, isAuthenticated, loginWithRedirect } = useAuth0()
-const waitForUser = async () => {
-  while (!user.value) {
-    await new Promise(resolve => setTimeout(resolve, 100));
+watchEffect(async () => {
+  if (!user.value?.sub || !isAuthenticated.value || !getAccessTokenSilently) {
+    return
   }
-}
-const fetchUserData = async () => {
+
+  const token = await GetToken(getAccessTokenSilently)
+  console.log(token);
+  if (!token) {
+    console.error('Token not available')
+    return
+  }
+
   try {
-    const token = await GetToken()
-    if (!token || !user.value?.sub) {
-      console.error('No token or user info')
-      return
-    }
-
-    const userId = encodeURIComponent(user.value.sub) // e.g., "auth0|abc123"
-
-    const response = await fetch(`http://localhost:5000/tweet/user/${userId}`, {
+    const userId = encodeURIComponent(user.value.sub)
+    // const response = await fetch(`http://localhost:5000/tweet/user/${userId}`, {
+    const response = await fetch(`https://twitterclone-avewc3b9bnbyaxfk.westeurope-01.azurewebsites.net/tweet/user/${userId}`, {
       method: 'GET',
       headers: {
         Authorization: `Bearer ${token}`,
@@ -36,28 +38,20 @@ const fetchUserData = async () => {
     }
 
     const data = await response.json()
-    console.log('Fetched tweets:', data)
-
     tweets.value = data.map((tweet, index) => ({
       id: index,
       handle: user.value.nickname || user.value.name,
       username: user.value.name || 'Anonymous',
       userAvatar: user.value.picture || 'https://via.placeholder.com/40',
       content: tweet.content,
-      timestamp: new Date(tweet.timestamp).toLocaleString() // Format the date
+      timestamp: new Date(tweet.timestamp).toLocaleString()
     }))
-
   } catch (error) {
     console.error("Error fetching tweets:", error)
   }
-}
+})
 
-// Automatically fetch on component mount
-onMounted(fetchUserData)
-onMounted(async () => {
-  await waitForUser();
-  fetchUserData();
-});
+
 
 </script>
 

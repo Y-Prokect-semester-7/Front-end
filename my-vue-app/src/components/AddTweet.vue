@@ -50,7 +50,8 @@ const postTweet = async () => {
       return;
     }
 
-    const response = await axios.post('http://localhost:5000/tweet', {
+    // const response = await axios.post('http://localhost:5000/tweet', {
+    const response = await axios.post('https://twitterclone-avewc3b9bnbyaxfk.westeurope-01.azurewebsites.net/tweet', {
       UserId: userId.value,
       Content: content.value,
       MediaUrl: mediaUrl.value,

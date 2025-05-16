@@ -10,10 +10,11 @@ app.use(router)
 
 app.use(
   createAuth0({
-    domain: "dev-2zn6n2l3.us.auth0.com",
-    clientId: "4NbWTrR1t7E2rmYjAAT5xCppROeHeSr9",
+    domain: import.meta.env.VITE_AUTH0_DOMAIN,
+    clientId: import.meta.env.VITE_AUTH0_CLIENT_ID,
     authorizationParams: {
-      redirect_uri: window.location.origin
+      redirect_uri: window.location.origin,
+      audience: import.meta.env.VITE_AUTH0_AUDIENCE
     }
   })
 );
