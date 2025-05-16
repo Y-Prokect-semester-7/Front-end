@@ -20,7 +20,7 @@ watchEffect(async () => {
   if (!token) { 
     console.error('Token not available')
     return
-  }
+  } 
 
   try {
     const userId = encodeURIComponent(user.value.sub)
