@@ -31,7 +31,7 @@ watchEffect(async () => {
         Authorization: `Bearer ${token}`,
         'Content-Type': 'application/json'
       }
-    })
+    }) 
 
     if (!response.ok) {
       throw new Error(`HTTP error! status: ${response.status}`)
