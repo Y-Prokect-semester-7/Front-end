@@ -21,9 +21,8 @@ watchEffect(async () => {
     console.error('Token not available')
     return
   } 
-
+  const userId = encodeURIComponent(user.value.sub)
   try {
-    const userId = encodeURIComponent(user.value.sub)
     // const response = await fetch(`http://localhost:5000/tweet/user/${userId}`, {
     const response = await fetch(`https://twitterclone-avewc3b9bnbyaxfk.westeurope-01.azurewebsites.net/tweet/user/${userId}`, {
       method: 'GET',
