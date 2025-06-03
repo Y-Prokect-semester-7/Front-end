@@ -46,8 +46,19 @@ watchEffect(async () => {
       content: tweet.content,
       timestamp: new Date(tweet.timestamp).toLocaleString()
     }))
-  } catch (error) {
-    console.error("Error fetching tweets:", error)
+  } catch (err) {
+    console.warn("Falling back to Azure Function:", err);
+
+    const fallback = await fetch(`https://tweet-functions-api.azurewebsites.net/api/tweets/user/${encodedUserId}`, {
+      method: 'GET',
+      headers: {
+        'Content-Type': 'application/json'
+        // Optionally add token here if your Azure Function requires auth
+        // Authorization: `Bearer ${token}`
+      }
+    });
+
+    return await fallback.json();
   }
 })
 
