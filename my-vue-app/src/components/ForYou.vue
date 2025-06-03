@@ -49,14 +49,19 @@ watchEffect(async () => {
   } catch (err) {
     console.warn("Falling back to Azure Function:", err);
 
-    const fallback = await fetch(`https://tweet-functions-api.azurewebsites.net/api/tweets/user/${encodedUserId}`, {
+    const fallback = await fetch(`https://tweet-functions-api.azurewebsites.net/api/tweets/user/${userId}`, {
       method: 'GET',
       headers: {
         'Content-Type': 'application/json'
         // Optionally add token here if your Azure Function requires auth
         // Authorization: `Bearer ${token}`
       }
+      
     });
+
+    if (!fallback.ok) {
+      throw new Error(`Fallback failed: ${fallback.status}`);
+    }
 
     return await fallback.json();
   }
