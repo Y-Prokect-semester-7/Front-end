@@ -46,23 +46,29 @@ watchEffect(async () => {
       timestamp: new Date(tweet.timestamp).toLocaleString()
     }))
   } catch (err) {
-    console.warn("Falling back to Azure Function:", err);
+    console.warn("Falling back to Azure Function:", err.message)
 
-    const fallback = await fetch(`https://tweet-functions-api.azurewebsites.net/api/tweets/user/${userId}`, {
-      method: 'GET',
-      headers: {
-        'Content-Type': 'application/json'
-        // Optionally add token here if your Azure Function requires auth
-        // Authorization: `Bearer ${token}`
+    try {
+      const fallback = await fetch(`https://tweet-functions-api.azurewebsites.net/api/tweets/user/${userId}`, {
+        method: 'GET',
+        headers: {
+          Authorization: `Bearer ${token}`, // include this if your function checks auth
+          'Content-Type': 'application/json'
+        }
+      })
+
+      if (!fallback.ok) {
+        throw new Error(`Fallback failed: ${fallback.status}`)
       }
-      
-    });
 
-    if (!fallback.ok) {
-      throw new Error(`Fallback failed: ${fallback.status}`);
+      const fallbackData = await fallback.json()
+      tweets.value = mapTweets(fallbackData)
+
+    } catch (fallbackErr) {
+      console.error("Fallback also failed:", fallbackErr.message)
+      // Optional: set a user-friendly error state here
+      tweets.value = []
     }
-
-    return await fallback.json();
   }
 })
 
