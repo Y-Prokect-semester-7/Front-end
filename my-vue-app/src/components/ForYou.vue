@@ -60,8 +60,10 @@ watchEffect(async () => {
       handle: user.value.nickname || user.value.name,
       username: user.value.name || 'Anonymous',
       userAvatar: user.value.picture || 'https://via.placeholder.com/40',
-      content: tweet.content,
-      timestamp: new Date(tweet.timestamp).toLocaleString()
+      content: tweet.content ?? tweet.Content ?? '[No Content]',  // ← 👈 fallback logic
+      timestamp: tweet.timestamp
+        ? new Date(tweet.timestamp).toLocaleString()
+        : 'Invalid Date'
     }));
   } catch (fallbackErr) {
     console.error("Fallback also failed:", fallbackErr);
