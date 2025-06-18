@@ -2,7 +2,7 @@ import axios from 'axios';
 
 export async function checkUserExists(auth0Id) {
   try {
-    const response = await axios.get(`http://localhost:5000/user/exists/${encodeURIComponent(auth0Id)}`);
+    const response = await axios.get(`https://twitterclone-avewc3b9bnbyaxfk.westeurope-01.azurewebsites.net/user/exists/${encodeURIComponent(auth0Id)}`);
     console.log('User existence check response:', response.data);
     return response.data.exists;
   } catch (error) {

@@ -29,7 +29,7 @@ const submitForm = async () => {
   const token = await getAccessTokenSilently();
 
   try {
-    const response = await fetch('twitterclone-avewc3b9bnbyaxfk.westeurope-01.azurewebsites.net/update-user', {
+    const response = await fetch('https://twitterclone-avewc3b9bnbyaxfk.westeurope-01.azurewebsites.net/update-user', {
       method: 'POST',
       headers: {
         Authorization: `Bearer ${token}`,

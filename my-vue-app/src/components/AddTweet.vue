@@ -36,7 +36,7 @@ const postTweet = async () => {
   }
 
   try {
-    const response = await axios.post('twitterclone-avewc3b9bnbyaxfk.westeurope-01.azurewebsites.net/tweet', formData, {
+    const response = await axios.post('https://twitterclone-avewc3b9bnbyaxfk.westeurope-01.azurewebsites.net/tweet', formData, {
       headers: {
         Authorization: `Bearer ${token}`,
         'Content-Type': 'multipart/form-data'

@@ -34,7 +34,7 @@ const submitForm = async () => {
       return;
     }
     const response = await axios.post(
-      'twitterclone-avewc3b9bnbyaxfk.westeurope-01.azurewebsites.net/adduser',
+      'https://twitterclone-avewc3b9bnbyaxfk.westeurope-01.azurewebsites.net/adduser',
       {
         auth0Id,
         username: newName.value,
