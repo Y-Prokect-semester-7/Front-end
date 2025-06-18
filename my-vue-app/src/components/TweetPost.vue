@@ -6,6 +6,7 @@
       <h4>{{ tweet.username }}</h4>
       <p>@{{ tweet.handle }}</p>
       <p class="timestamp">{{ tweet.timestamp }}</p> <!-- 👈 New -->
+      <img v-if="tweet.mediaUrl" :src="tweet.mediaUrl" class="tweet-media" width="100%" />
     </div>
   </div>
   <p>{{ tweet.content }}</p>

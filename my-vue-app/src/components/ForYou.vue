@@ -43,6 +43,7 @@ watchEffect(async () => {
       username: user.value.name || 'Anonymous',
       userAvatar: user.value.picture || 'https://via.placeholder.com/40',
       content: tweet.content,
+      mediaUrl: tweet.mediaUrl, // ✅ Add this line
       timestamp: new Date(tweet.timestamp).toLocaleString()
     }))
   } catch (err) {
@@ -60,11 +61,15 @@ watchEffect(async () => {
       handle: user.value.nickname || user.value.name,
       username: user.value.name || 'Anonymous',
       userAvatar: user.value.picture || 'https://via.placeholder.com/40',
-      content: tweet.content ?? tweet.Content ?? '[No Content]',  // ← 👈 fallback logic
+      content: tweet.content ?? tweet.Content ?? '[No Content]',
+      mediaUrl: tweet.mediaUrl ?? tweet.MediaUrl ?? '', // ✅ Add fallback support too
       timestamp: tweet.timestamp
         ? new Date(tweet.timestamp).toLocaleString()
         : 'Invalid Date'
-    }));
+    }))
+
+    console.log("Fallback data loaded successfully:", tweets.value);
+
   } catch (fallbackErr) {
     console.error("Fallback also failed:", fallbackErr);
   }

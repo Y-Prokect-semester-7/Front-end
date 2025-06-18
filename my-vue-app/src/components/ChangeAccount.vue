@@ -29,7 +29,7 @@ const submitForm = async () => {
   const token = await getAccessTokenSilently();
 
   try {
-    const response = await fetch('http://localhost:3000/api/update-user', {
+    const response = await fetch('twitterclone-avewc3b9bnbyaxfk.westeurope-01.azurewebsites.net/update-user', {
       method: 'POST',
       headers: {
         Authorization: `Bearer ${token}`,
@@ -55,7 +55,7 @@ const newPassword = ref('')
 
 const submitPasswordChange = async () => {
   try {
-    const res = await fetch('http://localhost:3000/api/change-password', {
+    const res = await fetch('twitterclone-avewc3b9bnbyaxfk.westeurope-01.azurewebsites.net/change-password', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({

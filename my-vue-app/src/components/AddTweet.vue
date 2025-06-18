@@ -2,40 +2,17 @@
 import { ref, computed } from 'vue'
 import { useAuth0 } from '@auth0/auth0-vue'
 import axios from 'axios'
-import { onMounted } from 'vue';
-import { GetToken } from '../security/SecurityConfig.js';
-
-// async function GetSecureData() {
-//   const token = await GetToken();
-//   if (!token) return;
-
-//   try {
-//     const response = await axios.get('https://localhost:5000/secure', {
-//       headers: {
-//         Authorization: `Bearer ${token}`
-//       }
-//     });
-
-//     console.log('Secure data:', response.data);
-//     return response.data;
-//   } catch (error) {
-//     console.error('Error fetching secure data:', error);
-//   }
-// }
-
-// // Example: auto-call on mount
-// onMounted(() => {
-//   GetSecureData();
-// });
+import { GetToken } from '../security/SecurityConfig.js'
 
 const { user, isAuthenticated, loginWithRedirect } = useAuth0()
 
 const content = ref('')
-const mediaUrl = ref('')
-const tweets = ref([])
-
-// user is a ref object, so use user.value
+const selectedFile = ref(null)
 const userId = computed(() => user.value?.sub || 'guest')
+
+const onFileChange = (event) => {
+  selectedFile.value = event.target.files[0]
+}
 
 const postTweet = async () => {
   if (!content.value || !isAuthenticated.value) {
@@ -43,34 +20,38 @@ const postTweet = async () => {
     return
   }
 
-  try {
-    const token = await GetToken();
-    if (!token) {
-      console.error('No token received');
-      return;
-    }
-
-    // const response = await axios.post('http://localhost:5000/tweet', {
-    const response = await axios.post('https://twitterclone-avewc3b9bnbyaxfk.westeurope-01.azurewebsites.net/tweet', {
-      UserId: userId.value,
-      Content: content.value,
-      MediaUrl: mediaUrl.value,
-      Visibility: true
-    }, {
-      headers: {
-        Authorization: `Bearer ${token}`
-      }
-    });
-
-    console.log('Tweet posted:', response.data);
-    // You can also update UI state here
-
-  } catch (err) {
-    console.error('Error posting tweet:', err);
+  const token = await GetToken();
+  if (!token) {
+    console.error('No token received');
+    return;
   }
 
+  const formData = new FormData()
+  formData.append('UserId', userId.value)
+  formData.append('Content', content.value)
+  formData.append('Visibility', true)
+
+  if (selectedFile.value) {
+    formData.append('Image', selectedFile.value)
+  }
+
+  try {
+    const response = await axios.post('twitterclone-avewc3b9bnbyaxfk.westeurope-01.azurewebsites.net/tweet', formData, {
+      headers: {
+        Authorization: `Bearer ${token}`,
+        'Content-Type': 'multipart/form-data'
+      }
+    })
+
+    console.log('Tweet posted:', response.data)
+    content.value = ''
+    selectedFile.value = null
+  } catch (err) {
+    console.error('Error posting tweet:', err)
+  }
 }
 </script>
+
 
 
 <template>
@@ -78,7 +59,7 @@ const postTweet = async () => {
     <h2>Post a Tweet</h2>
     <form @submit.prevent="postTweet">
       <textarea v-model="content" placeholder="What's on your mind?" rows="3"></textarea>
-      <input v-model="mediaUrl" type="text" placeholder="Optional media URL" />
+      <input type="file" @change="onFileChange" />
       <button type="submit">Post</button>
     </form>
 

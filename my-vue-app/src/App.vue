@@ -1,7 +1,13 @@
 <script setup>
 import { useAuth0 } from '@auth0/auth0-vue';
-const { user, isAuthenticated } = useAuth0();
+import { useRouter } from 'vue-router';
+import { onMounted } from 'vue';
+import { checkUserExists } from './services/authService';
+import { isUserRegistered } from './composables/useUserRegistration'; // ✅ import global ref
+
+const { user, isAuthenticated, isLoading } = useAuth0();
 const auth0 = useAuth0();
+const router = useRouter();
 
 const login = () => {
   auth0.loginWithRedirect();
@@ -10,7 +16,29 @@ const logout = () => {
   auth0.logout({ returnTo: window.location.origin });
 };
 
+onMounted(async () => {
+  const waitUntilReady = new Promise(resolve => {
+    const interval = setInterval(() => {
+      if (!isLoading.value) {
+        clearInterval(interval);
+        resolve();
+      }
+    }, 50);
+  });
+
+  await waitUntilReady;
+
+  if (isAuthenticated.value && user.value) {
+    const exists = await checkUserExists(user.value.sub);
+    isUserRegistered.value = exists;
+
+    if (!exists && router.currentRoute.value.path !== '/addaccount') {
+      router.replace('/addaccount');
+    }
+  }
+});
 </script>
+
 
 <template>
   <nav style="padding: 1rem; background-color: #f0f0f0; display: flex; gap: 1rem;">
